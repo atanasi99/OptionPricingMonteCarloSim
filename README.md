@@ -21,4 +21,31 @@ Vanilla/European and Asian option pricing using Monte Carlo simulation
 
 - Under risk-neutral probabilities, we use geometric Brownian motion (GBM)
 
-$S_T  = S_0 \cdot exp( (r - \frac{\sigma^2}{2})T + \sigma \sqrt{T}z      )$
+\begin{equation}
+    S_T  = S_0 \cdot exp( (r - \frac{\sigma^2}{2})T + \sigma \sqrt{T}z      )
+\end{equation}
+
+- where $r$ is the risk-free interest rate (instead of the real drift of $S$)
+
+**Non-Path-Dependent Algorithm to Estimate the IntrinsicValue:**
+
+1. Draw random numbers $z_1,z_2,...,z_I$ from the standard normal distribution.
+2. For $i \in {1,2,3,...,I}$:
+
+    i). Calculate the underlying security's value at the strike time $T$ by simulating geometric Brownian motion with drift
+and volatility $\sigma$ using the above equation.
+
+    ii). Compute the intrinsic value of the option $h_T = max\{ S_T - K, 0 \}$.
+
+    iii). Discount back to the present at the risk-free rate $r$, giving the present value:
+
+\begin{equation*}
+    C_i = e^{-rT} h_T
+\end{equation*}
+
+3. Output the final estimate by computing the Monte Carlo estimator:
+
+\begin{equation*}
+    \hat{C_i} = \frac{\sum^I_{i=1}C_i}{I}
+\end{equation*}
+
