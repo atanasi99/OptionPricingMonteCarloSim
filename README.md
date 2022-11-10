@@ -49,3 +49,52 @@ and volatility $\sigma$ using the above equation.
     \hat{C_i} = \frac{\sum^I_{i=1}C_i}{I}
 \end{equation*}
 
+### Monte Carlo Asian Options
+
+- The payoff of an Asian option is determined by the average of the price of the underlying over a pre-defined period of time.
+
+- Payoff for a fixed-strike Asian call option:
+
+\begin{equation*}
+    C_T = max\{A(0,T)-K,0\}
+\end{equation*}
+
+where:
+
+\begin{equation*}
+    A(0,T) = \frac{1}{T} \int^T_0 S_t dt
+\end{equation*}
+
+If we let $t_i = i \cdot (T/n)$, for $i \in \{0,1,2,...,n\}:
+
+\begin{equation*}
+    A(0,T) \approx \frac{1}{n} \sum^{n-1}_{i=0}S_t
+\end{equation*}
+
+- The payoff is path dependent, so now we need to simulate intermediate values of $S_t$.
+
+- To simulate GBM at M evenly spaced time intervals $T_i$ with $\Delta = T/M$
+
+\begin{equation*}
+    S_{t_k} = S_0 \cdot exp(\sum^k_{i=1}\sigma \sqrt{\Delta}z_i + (\mu - \frac{\sigma^2}{2})\Delta)
+\end{equation*}
+
+**Algorithm for Path-Dependant Option Pricing**
+
+1. Draw $I \cdot M$ random numbers from the standard distribution
+
+2. For $i \in \{1,2,...,I \}
+
+    i) Calculate underlying value at times $t_i \in \{ \Delta, 2\Delta, ..., M \Delta = T \}$ by simulating geometric Brownian motion with drift $\mu = r$ and volatility $\sigma$ for $S_{t_k}$.
+
+    ii) Estimate average value of the option $\hat{h_T} = \frac{1}{M} \sum^M_{i=1} S_{t_i}$
+
+    iii) Compute the intrinsic value of the option $h_T = max\{\hat{h_T} - K,0 \}
+
+    iv) Discount back to the present value at the risk-free rate $r$, giving the present value: $C_i = e^{-rT} h_T$
+
+3. Output the final estimate by computing the Monte Carlo estimator:
+
+\begin{equation*}
+    \bar{C} = \frac{\sum^I_{i=1}C_i}{I}
+\end{equation*}
