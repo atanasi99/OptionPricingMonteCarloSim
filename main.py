@@ -33,7 +33,7 @@ class OptionPricingMcs:
         S = S0 * np.exp(np.cumsum((r - 0.5 * sigma**2 ) * dt + sigma * np.sqrt( dt ) 
                         * np.random.standard_normal(( M , I )), axis = 0 )) 
         # Compute intrinsic value of option 
-        C = np.maximum((np.mean(S,axis=0)-self.K),0) 
+        C = np.maximum((np.mean(S,axis=0)-self.K),0) if self.opt_type == "call" else np.maximum((self.K-np.mean(S,axis=0)),0) 
         # Compute mean intrinsic value of option
         C_mean = np.mean(C)
         # Present value using continuos compounding
